@@ -22,12 +22,13 @@
 
 
 #include <iostream>
+#include <QResizeEvent>
 #include "qgraphpainter.h"
-#include "moc_qgraphpainter.cpp"
 using namespace std;
 
-QGraphPainter::QGraphPainter( QWidget * parent, const char * name, WFlags f):
-	QWidget(parent, name, f|WRepaintNoErase|WResizeNoErase){
+QGraphPainter::QGraphPainter( QWidget * parent, const char * name, Qt::WindowFlags f):
+	QWidget(parent, f){
+	setAccessibleName(name);
 	m_pixmap=new QPixmap(size());
 	m_pixmap->fill(Qt::white);
 	autoscale=false;
@@ -35,7 +36,7 @@ QGraphPainter::QGraphPainter( QWidget * parent, const char * name, WFlags f):
 }
 
 void QGraphPainter::resizeEvent(QResizeEvent * sizeev){
-	m_pixmap->resize(sizeev->size());
+	m_pixmap->scaled(sizeev->size());
 }
 
 QGraphPainter::~QGraphPainter(){
@@ -137,6 +138,10 @@ void QGraphPainter::paintEvent ( QPaintEvent * ){
 	painter.drawText( 3, height()/2, title);
 	QFont sansFont( "Helvetica [Cronyx]", 6);	
 	painter.setFont(sansFont);
-	bitBlt(this,0,0,m_pixmap,0,0,m_pixmap->width(),m_pixmap->height(),CopyROP);
+	painter.begin(this);
+	painter.drawPixmap(0,0,*m_pixmap,0,0,m_pixmap->width(),m_pixmap->height());
+	painter.end();
+
+//	bitBlt(this,0,0,m_pixmap,0,0,m_pixmap->width(),m_pixmap->height(),CopyROP);
 }
 

@@ -8,7 +8,7 @@
 
 class QSLAMandNavWidget :  public QMapPainter{
 	public:
-		QSLAMandNavWidget( QWidget * parent = 0, const char * name = 0, WFlags f = 0);
+		QSLAMandNavWidget( QWidget * parent = 0, const char * name = 0, Qt::WindowFlags f = 0);
 		virtual ~QSLAMandNavWidget();
 		std::list<GMapping::IntPoint > trajectoryPoints;
 		GMapping::IntPoint robotPose;

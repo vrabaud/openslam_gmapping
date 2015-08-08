@@ -3,7 +3,7 @@
 using namespace GMapping;
 
 
-QNavigatorWidget::QNavigatorWidget( QWidget * parent, const char * name, WFlags f)
+QNavigatorWidget::QNavigatorWidget( QWidget * parent, const char * name, Qt::WindowFlags f)
 : QMapPainter(parent, name, f), dumper("navigator", 1){
 	robotPose=IntPoint(0,0);
 	robotHeading=0;

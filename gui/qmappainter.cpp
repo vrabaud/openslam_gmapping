@@ -1,8 +1,8 @@
 #include "qmappainter.h"
 #include "moc_qmappainter.cpp"
 
-QMapPainter::QMapPainter( QWidget * parent, const char * name, WFlags f):
-	QWidget(parent, name, f|WRepaintNoErase|WResizeNoErase){
+QMapPainter::QMapPainter( QWidget * parent, const char * name, Qt::WindowFlags f):
+	QWidget(parent, name, f){
 	m_pixmap=new QPixmap(size());
 	m_pixmap->fill(Qt::white);
 }

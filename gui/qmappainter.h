@@ -10,7 +10,7 @@
 
 class QMapPainter :  public QWidget{
 	public:
-		QMapPainter( QWidget * parent = 0, const char * name = 0, WFlags f = 0);
+		QMapPainter( QWidget * parent = 0, const char * name = 0, Qt::WindowFlags f = 0);
 		virtual ~QMapPainter();
 	public:
 		template < typename Cell >

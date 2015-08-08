@@ -22,13 +22,13 @@
 
 
 #include "qparticleviewer.h"
-#include "moc_qparticleviewer.cpp"
 #include <qimage.h>
-
+#include <QMouseEvent>
 
 using namespace GMapping;
 
-QParticleViewer::QParticleViewer( QWidget * parent, const char * name , WFlags f, GridSlamProcessorThread* thread): QWidget(parent, name, f|WRepaintNoErase|WResizeNoErase){
+QParticleViewer::QParticleViewer( QWidget * parent, const char * name , Qt::WindowFlags f, GridSlamProcessorThread* thread): QWidget(parent, f){
+  setAccessibleName(name);
   viewCenter=Point(0.,0.);
   setMinimumSize(500,500);
   mapscale=10.;
@@ -54,11 +54,14 @@ QParticleViewer::~QParticleViewer(){
 void QParticleViewer::paintEvent ( QPaintEvent *paintevent ){
   if (! m_pixmap)
     return;
-  bitBlt(this,0,0,m_pixmap,0,0,m_pixmap->width(),m_pixmap->height(),CopyROP);
+  QPainter painter;
+  painter.begin(this);
+  painter.drawPixmap(0,0,*m_pixmap,0,0,m_pixmap->width(),m_pixmap->height());
+  painter.end();
 }
 
 void QParticleViewer::mousePressEvent ( QMouseEvent *event ){
-  if (event->button()==LeftButton){
+  if (event->button()==Qt::LeftButton){
     dragging=true;
     draggingPos=event->pos();	
   }
@@ -74,7 +77,7 @@ void QParticleViewer::mouseMoveEvent ( QMouseEvent *event ){
 }
 
 void QParticleViewer::mouseReleaseEvent ( QMouseEvent *event ){
-  if (event->button()==LeftButton){
+  if (event->button()==Qt::LeftButton){
     dragging=false;
   }
 }
@@ -95,7 +98,7 @@ void QParticleViewer::resizeEvent(QResizeEvent * sizeev){
   if (!m_pixmap)
     return;
   cerr << "QParticleViewer::resizeEvent" <<  sizeev->size().width()<< " " << sizeev->size().height() << endl;
-  m_pixmap->resize(sizeev->size());
+  m_pixmap->scaled(sizeev->size());
 }
 
 void QParticleViewer::drawParticleMove(const QParticleViewer::OrientedPointVector& oldPose, const QParticleViewer::OrientedPointVector& newPose){
@@ -117,9 +120,9 @@ void QParticleViewer::drawFromFile(){
     return;
   if (tis->atEnd())
     return;	
-  QTextIStream& is=*tis;
+  QTextStream& is=*tis;
 	
-  string line=is.readLine();
+  string line=is.readLine().toUtf8().constData();;
   istringstream lineStream(line);
   string recordType;
   lineStream >> recordType;
@@ -338,7 +341,7 @@ void QParticleViewer::drawFromMemory(){
       char name[100];
       sprintf(name,"dump-%05d.png", count/writeToFile);
       cout << " Writing " << name <<" ..." << flush;
-      QImage image=m_pixmap->convertToImage();
+      QImage image=m_pixmap->toImage();
       bool rv=image.save(name,"PNG");
       if (rv)
 	cout << " Done";
